@@ -1,48 +1,31 @@
+import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-import time
 
-options = webdriver.ChromeOptions()
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
-options.add_argument("--disable-gpu")
-options.add_argument("--headless=new")  # İstersen headless kaldır (penceresiz çalışır)
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--window-size=1920,1080")
+chrome_options.add_argument("--remote-debugging-port=9222")
 
-driver = webdriver.Chrome(service=Service("/usr/bin/chromedriver"), options=options)
+service = Service('/usr/bin/chromedriver')
+driver = webdriver.Chrome(service=service, options=chrome_options)
 
 try:
-    driver.get("https://web.whatsapp.com")
-    print("QR kodu okut, sonra Enter’a bas.")
-    input()
+    driver.get("https://www.sahibinden.com/alfa-romeo")
+    time.sleep(5)
 
-    # Alıcı kişinin adı (telefon rehberinde nasıl kayıtlıysa)
-    target_name = "Onur"
-
-    # Gönderilecek mesaj
-    message = "Merhaba! Bu mesaj otomatik gönderildi 🤖"
-
-    # Kişinin sohbetini bul
-    search_box = driver.find_element(By.XPATH, "//div[@contenteditable='true'][@data-tab='3']")
-    search_box.click()
-    search_box.send_keys(target_name)
-    time.sleep(2)
-
-    user = driver.find_element(By.XPATH, f"//span[@title='{target_name}']")
-    user.click()
-
-    # Mesaj kutusunu bul
-    message_box = driver.find_element(By.XPATH, "//div[@contenteditable='true'][@data-tab='10']")
-    message_box.send_keys(message)
-
-    # Gönder butonuna tıkla
-    send_button = driver.find_element(By.XPATH, "//button[@data-testid='compose-btn-send']")
-    send_button.click()
-
-    print("Mesaj başarıyla gönderildi!")
-
-except Exception as e:
-    print("Hata:", e)
+    ilanlar = driver.find_elements(By.CSS_SELECTOR, ".searchResultsRowClass")
+    for ilan in ilanlar[:5]:  # İlk 5 ilanı örnek yazdır
+        baslik = ilan.find_element(By.CSS_SELECTOR, ".searchResultsTitleValue").text
+        fiyat = ilan.find_element(By.CSS_SELECTOR, ".searchResultsPriceValue").text
+        print("Başlık:", baslik)
+        print("Fiyat:", fiyat)
+        print("-----")
 
 finally:
     driver.quit()
