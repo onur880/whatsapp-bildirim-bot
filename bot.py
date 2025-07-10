@@ -1,31 +1,27 @@
-import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
 
+# Chrome seçenekleri
 chrome_options = Options()
-chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--window-size=1920,1080")
-chrome_options.add_argument("--remote-debugging-port=9222")
+chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+chrome_options.add_argument("--headless=new")  # <<< EN ÖNEMLİ
 
-service = Service('/usr/bin/chromedriver')
+# ChromeDriver servisi
+service = Service("/usr/bin/chromedriver")
+
+# Tarayıcıyı başlat
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
-try:
-    driver.get("https://www.sahibinden.com/alfa-romeo")
-    time.sleep(5)
+# Test için Google'a git
+driver.get("https://www.google.com")
 
-    ilanlar = driver.find_elements(By.CSS_SELECTOR, ".searchResultsRowClass")
-    for ilan in ilanlar[:5]:  # İlk 5 ilanı örnek yazdır
-        baslik = ilan.find_element(By.CSS_SELECTOR, ".searchResultsTitleValue").text
-        fiyat = ilan.find_element(By.CSS_SELECTOR, ".searchResultsPriceValue").text
-        print("Başlık:", baslik)
-        print("Fiyat:", fiyat)
-        print("-----")
+# Sayfa başlığını yazdır
+print(driver.title)
 
-finally:
-    driver.quit()
+# Tarayıcıyı kapat
+driver.quit()
