@@ -22,8 +22,5 @@ driver = webdriver.Chrome(service=service, options=chrome_options)
 driver.get("https://www.google.com")
 print(driver.title)
 
-# İşlemi bitir
 driver.quit()
-
-# Sanal ekranı kapat
 display.stop()
